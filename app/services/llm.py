@@ -8,6 +8,11 @@ from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 
+# Ollama can be slow to produce the first token, especially with tool schemas
+# and long inputs. Use a short connect timeout (fail fast if Ollama is down)
+# and a generous read timeout for the actual model response.
+_OLLAMA_TIMEOUT = httpx.Timeout(connect=10.0, read=600.0, write=30.0, pool=5.0)
+
 
 # ── Normalisation helpers ──
 
@@ -116,7 +121,7 @@ async def _ollama_chat(
         body["tools"] = tools
 
     try:
-        async with httpx.AsyncClient(timeout=120) as client:
+        async with httpx.AsyncClient(timeout=_OLLAMA_TIMEOUT) as client:
             resp = await client.post(url, json=body)
             resp.raise_for_status()
             return _normalize_ollama_response(resp.json())
@@ -150,7 +155,7 @@ async def _ollama_stream(
     buffered_tool_calls: list[dict] = []
 
     try:
-        async with httpx.AsyncClient(timeout=120) as client:
+        async with httpx.AsyncClient(timeout=_OLLAMA_TIMEOUT) as client:
             async with client.stream("POST", url, json=body) as resp:
                 resp.raise_for_status()
                 async for line in resp.aiter_lines():

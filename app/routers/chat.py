@@ -4,9 +4,10 @@ import time
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 
+from app.agents.conversational import ConversationalAgent
 from app.models.schemas import ChatRequest, ChatResponse
 from app.services.database import save_message
-from app.services.llm import chat_completion, chat_completion_stream
+from app.services.llm import chat_completion
 from app.services.memory import build_context
 
 router = APIRouter(prefix="/chat", tags=["chat"])
@@ -71,7 +72,8 @@ async def chat_stream(request: ChatRequest):
         _dbg("save_message(user) FAILED", {"error": str(exc)}, "H-C")
         # endregion
         raise
-    messages = _build_messages(request.message)
+
+    agent = ConversationalAgent()
 
     async def event_generator():
         # region agent log
@@ -80,16 +82,16 @@ async def chat_stream(request: ChatRequest):
         full_reply = ""
         chunk_count = 0
         try:
-            async for chunk in chat_completion_stream(messages):
-                text = chunk.get("content", "")
-                if text:
-                    full_reply += text
-                    chunk_count += 1
-                    # region agent log
-                    if chunk_count == 1:
-                        _dbg("first chunk received from LLM", {"text_preview": text[:40]}, "H-D")
-                    # endregion
-                    yield f"data: {text}\n\n"
+            async for text in agent.run(request.message):
+                if not text:
+                    continue
+                full_reply += text
+                chunk_count += 1
+                # region agent log
+                if chunk_count == 1:
+                    _dbg("first chunk received from agent", {"text_preview": text[:40]}, "H-D")
+                # endregion
+                yield f"data: {text}\n\n"
         except Exception as exc:
             # region agent log
             _dbg("event_generator stream EXCEPTION", {"error": str(exc)}, "H-C")

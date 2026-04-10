@@ -168,3 +168,39 @@ async def get_conversation_history(limit: int = 50) -> list[dict]:
             (USER_ID, limit),
         )
         return await cursor.fetchall()
+
+
+# ── Users ──
+
+async def upsert_user_name(name: str) -> None:
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            """INSERT INTO users (id, name) VALUES (?, ?)
+               ON CONFLICT(id) DO UPDATE SET name = excluded.name""",
+            (USER_ID, name),
+        )
+        await db.commit()
+
+
+async def get_applications(job_id: int | None = None) -> list[dict]:
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = _row_to_dict
+        if job_id is not None:
+            cursor = await db.execute(
+                """SELECT a.id, a.job_id, a.applied_at, a.method, a.status, a.notes,
+                          j.title, j.company, j.url, j.status AS job_status
+                   FROM applications a JOIN jobs j ON a.job_id = j.id
+                   WHERE a.user_id = ? AND a.job_id = ?
+                   ORDER BY a.applied_at DESC""",
+                (USER_ID, job_id),
+            )
+        else:
+            cursor = await db.execute(
+                """SELECT a.id, a.job_id, a.applied_at, a.method, a.status, a.notes,
+                          j.title, j.company, j.url, j.status AS job_status
+                   FROM applications a JOIN jobs j ON a.job_id = j.id
+                   WHERE a.user_id = ?
+                   ORDER BY a.applied_at DESC""",
+                (USER_ID,),
+            )
+        return await cursor.fetchall()
