@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import chat, jobs, profile
+from app.routers import chat, jobs, profile, settings
 from app.services.database import init_db
 from app.services.memory import init_user_memory
 
@@ -28,6 +28,7 @@ app.add_middleware(
 app.include_router(chat.router)
 app.include_router(jobs.router)
 app.include_router(profile.router)
+app.include_router(settings.router)
 
 
 @app.get("/health")

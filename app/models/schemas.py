@@ -74,6 +74,21 @@ class ChatResponse(BaseModel):
     reply: str
 
 
+# ── Settings ──
+
+class SettingsUpdate(BaseModel):
+    provider: str | None = None
+    model: str | None = None
+    api_key: str | None = None
+    ollama_base_url: str | None = None
+
+
+class SettingsResponse(BaseModel):
+    provider: str
+    model: str
+    ollama_base_url: str
+
+
 # ── Memory / Markdown ──
 
 class MarkdownContent(BaseModel):

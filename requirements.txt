@@ -2,4 +2,6 @@ fastapi
 uvicorn[standard]
 aiosqlite
 pydantic
+pydantic-settings
+httpx
 litellm
