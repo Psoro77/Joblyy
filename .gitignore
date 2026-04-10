@@ -1,0 +1,33 @@
+.cursor/
+CLAUDE.md
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data
+data/app.db
+
+# Memory files (user-specific, regenerated)
+app/memory/*
+!app/memory/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
