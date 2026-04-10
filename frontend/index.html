@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joblyy</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a1a2e;
+  --bg-surface: #16213e;
+  --bg-input: #0f3460;
+  --text: #e0e0e0;
+  --text-muted: #8a8a9a;
+  --accent: #e94560;
+  --accent-hover: #ff6b81;
+  --border: #2a2a4a;
+  --user-bg: #0f3460;
+  --assistant-bg: #1a1a2e;
+  --badge-found: #3498db;
+  --badge-saved: #9b59b6;
+  --badge-applied: #2ecc71;
+  --badge-rejected: #e74c3c;
+  --badge-interview: #f39c12;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+}
+
+/* ── Layout ── */
+#app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Left sidebar ── */
+#left-sidebar {
+  width: 220px;
+  min-width: 220px;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+#left-sidebar h1 {
+  font-size: 20px;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+
+.sidebar-section h3 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.sidebar-section label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  margin-top: 8px;
+}
+
+.sidebar-section label:first-of-type { margin-top: 0; }
+
+.sidebar-section select,
+.sidebar-section input[type="text"],
+.sidebar-section input[type="password"] {
+  width: 100%;
+  padding: 6px 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+}
+
+.sidebar-section select:focus,
+.sidebar-section input:focus {
+  border-color: var(--accent);
+}
+
+.btn {
+  display: inline-block;
+  padding: 6px 14px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn:hover { background: var(--accent-hover); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-sm { padding: 4px 10px; font-size: 11px; }
+.btn-block { display: block; width: 100%; text-align: center; }
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+nav { display: flex; flex-direction: column; gap: 4px; }
+
+nav button {
+  text-align: left;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+nav button:hover { background: var(--bg-input); }
+nav button.active { background: var(--bg-input); color: var(--accent); }
+
+.settings-status {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  min-height: 16px;
+}
+
+/* ── Center panel ── */
+#center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.view { display: none; flex-direction: column; height: 100%; }
+.view.active { display: flex; }
+
+/* Chat */
+#chat-view { display: flex; flex-direction: column; }
+#chat-view.active { display: flex; }
+
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.msg {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.msg.user {
+  align-self: flex-end;
+  background: var(--user-bg);
+  border-bottom-right-radius: 2px;
+}
+
+.msg.assistant {
+  align-self: flex-start;
+  background: var(--assistant-bg);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 2px;
+}
+
+.msg .role-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+#chat-input-area {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+
+#chat-input {
+  flex: 1;
+  resize: none;
+  padding: 10px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  min-height: 44px;
+  max-height: 160px;
+  outline: none;
+}
+
+#chat-input:focus { border-color: var(--accent); }
+
+#send-btn {
+  align-self: flex-end;
+  padding: 10px 20px;
+}
+
+/* Jobs view */
+#jobs-view .jobs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+#jobs-view .jobs-header h2 { font-size: 16px; }
+
+#job-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.job-card {
+  padding: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.job-card .job-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.job-card .job-company {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.job-card .job-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.job-card a {
+  color: var(--accent);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.job-card a:hover { text-decoration: underline; }
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.badge-found { background: var(--badge-found); color: #fff; }
+.badge-saved { background: var(--badge-saved); color: #fff; }
+.badge-applied { background: var(--badge-applied); color: #fff; }
+.badge-rejected { background: var(--badge-rejected); color: #fff; }
+.badge-interview { background: var(--badge-interview); color: #fff; }
+
+.score {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 40px 16px;
+  font-size: 14px;
+}
+
+/* Profile view */
+#profile-view { padding: 16px; gap: 16px; }
+
+.profile-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.profile-tabs button {
+  padding: 6px 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px 4px 0 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.profile-tabs button.active {
+  background: var(--bg-surface);
+  color: var(--text);
+  border-bottom-color: var(--bg-surface);
+}
+
+.profile-editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-editor textarea {
+  flex: 1;
+  resize: none;
+  padding: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 0 6px 6px 6px;
+  color: var(--text);
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  outline: none;
+}
+
+.profile-editor textarea:focus { border-color: var(--accent); }
+
+.profile-editor .actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.profile-status {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: 8px;
+}
+
+/* ── Right sidebar ── */
+#right-sidebar {
+  width: 280px;
+  min-width: 280px;
+  background: var(--bg-surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  transition: width 0.2s, min-width 0.2s, padding 0.2s;
+}
+
+#right-sidebar.collapsed {
+  width: 0;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border-left: none;
+}
+
+#toggle-right {
+  position: fixed;
+  right: 8px;
+  top: 8px;
+  z-index: 10;
+  padding: 4px 8px;
+  font-size: 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#toggle-right:hover { border-color: var(--accent); }
+
+.right-section {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.right-section h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.right-section .mini-profile,
+.right-section .mini-prefs {
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.right-jobs { padding: 16px; flex: 1; overflow-y: auto; }
+
+.right-jobs h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.right-job-item {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.right-job-item:last-child { border-bottom: none; }
+.right-job-item .rj-title { font-weight: 600; }
+.right-job-item .rj-company { color: var(--text-muted); font-size: 11px; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<button id="toggle-right" title="Toggle sidebar">◨</button>
+
+<div id="app">
+  <!-- Left Sidebar -->
+  <aside id="left-sidebar">
+    <h1>JOBLYY</h1>
+
+    <div class="sidebar-section">
+      <h3>Navigation</h3>
+      <nav>
+        <button class="active" data-view="chat-view">Chat</button>
+        <button data-view="jobs-view">Jobs</button>
+        <button data-view="profile-view">Profile</button>
+      </nav>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>Settings</h3>
+      <label for="s-provider">Provider</label>
+      <select id="s-provider">
+        <option value="ollama">Local (Ollama)</option>
+        <option value="cloud">Cloud (LiteLLM)</option>
+      </select>
+
+      <label for="s-model">Model</label>
+      <input type="text" id="s-model" placeholder="gemma3:4b">
+
+      <div id="cloud-fields" style="display:none">
+        <label for="s-apikey">API Key</label>
+        <input type="password" id="s-apikey" placeholder="sk-...">
+
+        <label for="s-ollama-url">Ollama URL</label>
+        <input type="text" id="s-ollama-url" placeholder="http://localhost:11434">
+      </div>
+
+      <br>
+      <button class="btn btn-sm btn-block" id="save-settings-btn">Save Settings</button>
+      <div class="settings-status" id="settings-status"></div>
+    </div>
+  </aside>
+
+  <!-- Center Panel -->
+  <main id="center">
+    <!-- Chat View -->
+    <div id="chat-view" class="view active">
+      <div id="messages">
+        <div class="empty-state">Start a conversation with Joblyy.</div>
+      </div>
+      <div id="chat-input-area">
+        <textarea id="chat-input" rows="1" placeholder="Type a message... (Enter to send, Shift+Enter for newline)"></textarea>
+        <button class="btn" id="send-btn">Send</button>
+      </div>
+    </div>
+
+    <!-- Jobs View -->
+    <div id="jobs-view" class="view">
+      <div class="jobs-header">
+        <h2>Jobs</h2>
+        <button class="btn btn-sm" id="refresh-jobs-btn">Refresh</button>
+      </div>
+      <div id="job-list">
+        <div class="empty-state">No jobs found yet. Chat with Joblyy to search for jobs.</div>
+      </div>
+    </div>
+
+    <!-- Profile View -->
+    <div id="profile-view" class="view">
+      <div class="profile-tabs">
+        <button class="active" data-tab="profile">Profile</button>
+        <button data-tab="preferences">Preferences</button>
+      </div>
+      <div class="profile-editor">
+        <textarea id="profile-textarea" placeholder="Your profile will appear here..."></textarea>
+        <div class="actions">
+          <button class="btn btn-sm" id="save-profile-btn">Save</button>
+          <span class="profile-status" id="profile-status"></span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right Sidebar -->
+  <aside id="right-sidebar">
+    <div class="right-section">
+      <h3>Profile Summary</h3>
+      <div class="mini-profile" id="mini-profile">Loading...</div>
+    </div>
+    <div class="right-section">
+      <h3>Preferences</h3>
+      <div class="mini-prefs" id="mini-prefs">Loading...</div>
+    </div>
+    <div class="right-jobs">
+      <h3>Recent Jobs</h3>
+      <div id="right-job-list"><span class="empty-state" style="padding:8px 0">None</span></div>
+    </div>
+  </aside>
+</div>
+
+<script>
+const API = window.location.origin;
+
+// ── State ──
+let currentView = 'chat-view';
+let currentProfileTab = 'profile';
+let streaming = false;
+
+// ── DOM refs ──
+const $messages    = document.getElementById('messages');
+const $chatInput   = document.getElementById('chat-input');
+const $sendBtn     = document.getElementById('send-btn');
+const $provider    = document.getElementById('s-provider');
+const $model       = document.getElementById('s-model');
+const $apiKey      = document.getElementById('s-apikey');
+const $ollamaUrl   = document.getElementById('s-ollama-url');
+const $cloudFields = document.getElementById('cloud-fields');
+const $settingsStatus = document.getElementById('settings-status');
+const $jobList     = document.getElementById('job-list');
+const $profileTA   = document.getElementById('profile-textarea');
+const $profileStatus = document.getElementById('profile-status');
+const $miniProfile = document.getElementById('mini-profile');
+const $miniPrefs   = document.getElementById('mini-prefs');
+const $rightJobList = document.getElementById('right-job-list');
+const $rightSidebar = document.getElementById('right-sidebar');
+
+// ── Navigation ──
+document.querySelectorAll('nav button[data-view]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const view = document.getElementById(btn.dataset.view);
+    view.classList.add('active');
+    currentView = btn.dataset.view;
+
+    if (currentView === 'jobs-view') loadJobs();
+    if (currentView === 'profile-view') loadProfileTab();
+  });
+});
+
+document.getElementById('toggle-right').addEventListener('click', () => {
+  $rightSidebar.classList.toggle('collapsed');
+});
+
+// ── Settings ──
+$provider.addEventListener('change', () => {
+  $cloudFields.style.display = $provider.value === 'cloud' ? 'block' : 'none';
+});
+
+document.getElementById('save-settings-btn').addEventListener('click', async () => {
+  const body = {
+    provider: $provider.value,
+    model: $model.value || undefined,
+    api_key: $apiKey.value || undefined,
+    ollama_base_url: $ollamaUrl.value || undefined,
+  };
+  try {
+    const res = await fetch(`${API}/settings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(res.statusText);
+    const data = await res.json();
+    flashStatus($settingsStatus, `Saved: ${data.provider} / ${data.model}`);
+  } catch (e) {
+    flashStatus($settingsStatus, `Error: ${e.message}`, true);
+  }
+});
+
+async function loadSettings() {
+  try {
+    const res = await fetch(`${API}/settings`);
+    const data = await res.json();
+    $provider.value = data.provider;
+    $model.value = data.model;
+    $ollamaUrl.value = data.ollama_base_url;
+    $cloudFields.style.display = data.provider === 'cloud' ? 'block' : 'none';
+  } catch (_) {}
+}
+
+// ── Chat ──
+$chatInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+$chatInput.addEventListener('input', () => {
+  $chatInput.style.height = 'auto';
+  $chatInput.style.height = Math.min($chatInput.scrollHeight, 160) + 'px';
+});
+
+$sendBtn.addEventListener('click', sendMessage);
+
+async function sendMessage() {
+  const text = $chatInput.value.trim();
+  if (!text || streaming) return;
+
+  // Clear empty state
+  const empty = $messages.querySelector('.empty-state');
+  if (empty) empty.remove();
+
+  appendMessage('user', text);
+  $chatInput.value = '';
+  $chatInput.style.height = 'auto';
+
+  streaming = true;
+  $sendBtn.disabled = true;
+
+  const assistantEl = appendMessage('assistant', '');
+  const contentEl = assistantEl.querySelector('.msg-content');
+
+  // #region agent log
+  fetch('http://127.0.0.1:7340/ingest/9f00e394-1e3c-44e7-b4bf-cd3da0a241fa', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'X-Debug-Session-Id': 'f1df32'},
+    body: JSON.stringify({sessionId:'f1df32', location:'index.html:sendMessage', message:'about to fetch /chat/stream', data:{url: `${API}/chat/stream`, origin: window.location.origin}, timestamp: Date.now(), hypothesisId:'H-A H-E'}),
+  }).catch(() => {});
+  // #endregion
+  try {
+    const res = await fetch(`${API}/chat/stream`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text }),
+    });
+
+    if (!res.ok) {
+      contentEl.textContent = `Error: ${res.status} ${res.statusText}`;
+      return;
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const payload = line.slice(6);
+        if (payload === '[DONE]') continue;
+        contentEl.textContent += payload;
+      }
+      $messages.scrollTop = $messages.scrollHeight;
+    }
+  } catch (e) {
+    contentEl.textContent = `Connection error: ${e.message}`;
+  } finally {
+    streaming = false;
+    $sendBtn.disabled = false;
+    $chatInput.focus();
+  }
+}
+
+function appendMessage(role, text) {
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = `<div class="role-label">${role}</div><div class="msg-content">${escapeHtml(text)}</div>`;
+  $messages.appendChild(div);
+  $messages.scrollTop = $messages.scrollHeight;
+  return div;
+}
+
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// ── Jobs ──
+document.getElementById('refresh-jobs-btn').addEventListener('click', loadJobs);
+
+async function loadJobs() {
+  try {
+    const res = await fetch(`${API}/jobs`);
+    const jobs = await res.json();
+    renderJobs(jobs);
+    renderRightJobs(jobs);
+  } catch (e) {
+    $jobList.innerHTML = `<div class="empty-state">Failed to load jobs</div>`;
+  }
+}
+
+function renderJobs(jobs) {
+  if (!jobs.length) {
+    $jobList.innerHTML = '<div class="empty-state">No jobs found yet. Chat with Joblyy to search for jobs.</div>';
+    return;
+  }
+  $jobList.innerHTML = jobs.map(j => `
+    <div class="job-card">
+      <div class="job-title">${escapeHtml(j.title)}</div>
+      <div class="job-company">${escapeHtml(j.company)}</div>
+      <div class="job-meta">
+        <span class="badge badge-${j.status}">${j.status}</span>
+        ${j.match_score != null ? `<span class="score">${Math.round(j.match_score * 100)}% match</span>` : ''}
+        <a href="${escapeHtml(j.url)}" target="_blank" rel="noopener">Open ↗</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderRightJobs(jobs) {
+  const recent = jobs.slice(0, 8);
+  if (!recent.length) {
+    $rightJobList.innerHTML = '<span class="empty-state" style="padding:8px 0">None</span>';
+    return;
+  }
+  $rightJobList.innerHTML = recent.map(j => `
+    <div class="right-job-item">
+      <div class="rj-title">${escapeHtml(j.title)}</div>
+      <div class="rj-company">${escapeHtml(j.company)} · <span class="badge badge-${j.status}" style="font-size:9px">${j.status}</span></div>
+    </div>
+  `).join('');
+}
+
+// ── Profile / Preferences ──
+document.querySelectorAll('.profile-tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.profile-tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentProfileTab = btn.dataset.tab;
+    loadProfileTab();
+  });
+});
+
+document.getElementById('save-profile-btn').addEventListener('click', saveProfile);
+
+async function loadProfileTab() {
+  const endpoint = currentProfileTab === 'profile' ? '/profile' : '/profile/preferences';
+  try {
+    const res = await fetch(`${API}${endpoint}`);
+    $profileTA.value = await res.text();
+    $profileStatus.textContent = '';
+  } catch (e) {
+    $profileTA.value = '';
+    flashStatus($profileStatus, 'Failed to load', true);
+  }
+}
+
+async function saveProfile() {
+  const endpoint = currentProfileTab === 'profile' ? '/profile' : '/profile/preferences';
+  try {
+    const res = await fetch(`${API}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: $profileTA.value }),
+    });
+    if (!res.ok) throw new Error(res.statusText);
+    flashStatus($profileStatus, 'Saved');
+    loadSidebar();
+  } catch (e) {
+    flashStatus($profileStatus, `Error: ${e.message}`, true);
+  }
+}
+
+// ── Right sidebar data ──
+async function loadSidebar() {
+  try {
+    const [profileRes, prefsRes, jobsRes] = await Promise.all([
+      fetch(`${API}/profile`),
+      fetch(`${API}/profile/preferences`),
+      fetch(`${API}/jobs`),
+    ]);
+    $miniProfile.textContent = truncate(await profileRes.text(), 500) || 'No profile yet';
+    $miniPrefs.textContent = truncate(await prefsRes.text(), 500) || 'No preferences set';
+    renderRightJobs(await jobsRes.json());
+  } catch (_) {}
+}
+
+function truncate(s, max) {
+  if (!s) return s;
+  return s.length > max ? s.slice(0, max) + '…' : s;
+}
+
+// ── Helpers ──
+function flashStatus(el, msg, isError) {
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--accent)' : '#2ecc71';
+  setTimeout(() => { el.textContent = ''; el.style.color = ''; }, 3000);
+}
+
+// ── Init ──
+// #region agent log
+(function() {
+  const origin = window.location.origin;
+  const href = window.location.href;
+  fetch('http://127.0.0.1:7340/ingest/9f00e394-1e3c-44e7-b4bf-cd3da0a241fa', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'X-Debug-Session-Id': 'f1df32'},
+    body: JSON.stringify({sessionId:'f1df32', location:'index.html:init', message:'page loaded - origin check', data:{origin, href, api: window.location.origin}, timestamp: Date.now(), hypothesisId:'H-A'}),
+  }).catch(() => {});
+})();
+// #endregion
+loadSettings();
+loadSidebar();
+</script>
+</body>
+</html>

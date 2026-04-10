@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     llm_provider: str = "ollama"
-    ollama_model: str = "gemma3:4b"
+    ollama_model: str = "gemma4:e2b"
     ollama_base_url: str = "http://localhost:11434"
     cloud_api_key: str = ""
     cloud_model: str = "anthropic/claude-sonnet-4-20250514"

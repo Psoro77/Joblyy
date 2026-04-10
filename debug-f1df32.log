@@ -1,0 +1,10 @@
+{"sessionId": "f1df32", "timestamp": 1775848427598, "location": "chat.py", "message": "chat_stream entered", "data": {"message_preview": "hello"}, "hypothesisId": "H-B"}
+{"sessionId": "f1df32", "timestamp": 1775848427609, "location": "chat.py", "message": "build_context OK", "data": {"context_len": 166}, "hypothesisId": "H-C"}
+{"sessionId": "f1df32", "timestamp": 1775848427611, "location": "chat.py", "message": "event_generator started", "data": {}, "hypothesisId": "H-C"}
+{"sessionId": "f1df32", "timestamp": 1775848435459, "location": "chat.py", "message": "first chunk received from LLM", "data": {"text_preview": "Hello"}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775848436393, "location": "chat.py", "message": "event_generator done", "data": {"chunk_count": 13, "reply_len": 53}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775848441901, "location": "chat.py", "message": "chat_stream entered", "data": {"message_preview": "who are you"}, "hypothesisId": "H-B"}
+{"sessionId": "f1df32", "timestamp": 1775848441909, "location": "chat.py", "message": "build_context OK", "data": {"context_len": 166}, "hypothesisId": "H-C"}
+{"sessionId": "f1df32", "timestamp": 1775848441910, "location": "chat.py", "message": "event_generator started", "data": {}, "hypothesisId": "H-C"}
+{"sessionId": "f1df32", "timestamp": 1775848464231, "location": "chat.py", "message": "first chunk received from LLM", "data": {"text_preview": "I"}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775848466468, "location": "chat.py", "message": "event_generator done", "data": {"chunk_count": 27, "reply_len": 118}, "hypothesisId": "H-D"}
