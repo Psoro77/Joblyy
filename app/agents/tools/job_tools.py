@@ -1,3 +1,4 @@
+from typing import Optional, Dict
 import logging
 
 from app.services import database
@@ -54,7 +55,7 @@ GET_APPLICATION_STATUS_SCHEMA = {
 }
 
 
-async def get_jobs(status: str | None = None, limit: int = 10) -> str:
+async def get_jobs(status: Optional[str] = None, limit: int = 10) -> str:
     try:
         rows = await database.get_jobs(status=status, limit=limit)
         if not rows:
@@ -74,7 +75,7 @@ async def get_jobs(status: str | None = None, limit: int = 10) -> str:
         return f"Error in get_jobs: {exc}"
 
 
-async def get_application_status(job_id: int | None = None) -> str:
+async def get_application_status(job_id: Optional[int] = None) -> str:
     try:
         rows = await database.get_applications(job_id=job_id)
         if not rows:
@@ -100,7 +101,7 @@ async def get_application_status(job_id: int | None = None) -> str:
         return f"Error in get_application_status: {exc}"
 
 
-JOB_TOOLS: dict[str, dict] = {
+JOB_TOOLS: Dict[str, dict] = {
     "get_jobs": {
         "schema": GET_JOBS_SCHEMA,
         "fn": get_jobs,

@@ -1,3 +1,4 @@
+from typing import List, Dict
 import json
 import logging
 from collections.abc import AsyncGenerator
@@ -54,9 +55,9 @@ def detect_intent(message: str) -> str:
 
 
 def _append_tool_exchange(
-    messages: list[dict],
-    tool_calls: list[dict],
-    results: list[str],
+    messages: List[dict],
+    tool_calls: List[dict],
+    results: List[str],
 ) -> None:
     """Append the assistant tool-call turn + tool results in Ollama-native format."""
     assistant_tool_calls = [
@@ -91,7 +92,7 @@ class ConversationalAgent:
     def __init__(self, user_id: int = 1):
         self.user_id = user_id
 
-    async def _load_history(self, current_message: str) -> list[dict]:
+    async def _load_history(self, current_message: str) -> List[dict]:
         rows = await get_conversation_history(limit=HISTORY_LIMIT)
         history = [{"role": r["role"], "content": r["content"]} for r in rows]
         if history and history[-1]["role"] == "user" and history[-1]["content"] == current_message:
@@ -120,7 +121,7 @@ class ConversationalAgent:
         system_prompt = SYSTEM_TEMPLATE.format(context=context or "(none)")
 
         history = await self._load_history(user_message)
-        messages: list[dict] = [
+        messages: List[dict] = [
             {"role": "system", "content": system_prompt},
             *history,
             {"role": "user", "content": user_message},
@@ -129,7 +130,7 @@ class ConversationalAgent:
         tool_schemas = get_tool_schemas()
 
         for iteration in range(MAX_ITERATIONS):
-            tool_calls_buffer: list[dict] = []
+            tool_calls_buffer: List[dict] = []
             iter_text = ""
 
             async for chunk in chat_completion_stream(messages, tools=tool_schemas):
@@ -144,7 +145,7 @@ class ConversationalAgent:
             if not tool_calls_buffer:
                 return
 
-            results: list[str] = []
+            results: List[str] = []
             for call in tool_calls_buffer:
                 name = call.get("name", "")
                 args = call.get("arguments", {})

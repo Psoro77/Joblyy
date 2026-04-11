@@ -1,3 +1,4 @@
+from typing import Dict, List
 import logging
 from pathlib import Path
 
@@ -51,7 +52,7 @@ PREFERENCES_TEMPLATE = """\
 (not set)
 """
 
-_TEMPLATES: dict[str, str] = {
+_TEMPLATES: Dict[str, str] = {
     "profile.md": PROFILE_TEMPLATE,
     "preferences.md": PREFERENCES_TEMPLATE,
     "session.md": "",
@@ -139,7 +140,7 @@ def build_context(user_id: int, intent: str, **kwargs: str) -> str:
         job_details: job description string, used with intent="apply".
     """
     try:
-        parts: list[str] = []
+        parts: List[str] = []
 
         if intent == "general":
             summary = _profile_summary(user_id)

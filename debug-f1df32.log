@@ -67,3 +67,31 @@
 {"sessionId": "f1df32", "timestamp": 1775852349739, "location": "chat.py", "message": "event_generator started", "data": {}, "hypothesisId": "H-C"}
 {"sessionId": "f1df32", "timestamp": 1775852501132, "location": "chat.py", "message": "first chunk received from agent", "data": {"text_preview": "\n"}, "hypothesisId": "H-D"}
 {"sessionId": "f1df32", "timestamp": 1775852647274, "location": "chat.py", "message": "event_generator done", "data": {"chunk_count": 54, "reply_len": 207}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873026025, "location": "chat.py", "message": "chat_stream entered", "data": {"message_preview": "helllo"}, "hypothesisId": "H-B"}
+{"sessionId": "f1df32", "timestamp": 1775873026028, "location": "chat.py", "message": "event_generator started", "data": {}, "hypothesisId": "H-C"}
+{"sessionId": "f1df32", "timestamp": 1775873032027, "location": "chat.py", "message": "first chunk received from agent", "data": {"text_preview": "Hello"}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873032268, "location": "chat.py", "message": "event_generator done", "data": {"chunk_count": 13, "reply_len": 55}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873048441, "location": "chat.py", "message": "chat_stream entered", "data": {"message_preview": "what tools do you have acces to ?"}, "hypothesisId": "H-B"}
+{"sessionId": "f1df32", "timestamp": 1775873048446, "location": "chat.py", "message": "event_generator started", "data": {}, "hypothesisId": "H-C"}
+{"sessionId": "f1df32", "timestamp": 1775873049569, "location": "chat.py", "message": "first chunk received from agent", "data": {"text_preview": "I"}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873052411, "location": "chat.py", "message": "event_generator done", "data": {"chunk_count": 153, "reply_len": 594}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873080368, "location": "chat.py", "message": "chat_stream entered", "data": {"message_preview": "Boubacar Ba\n\nBba1@laurentian.ca | 4372351422 | https://githu"}, "hypothesisId": "H-B"}
+{"sessionId": "f1df32", "timestamp": 1775873080373, "location": "chat.py", "message": "event_generator started", "data": {}, "hypothesisId": "H-C"}
+{"sessionId": "f1df32", "timestamp": 1775873116628, "location": "chat.py", "message": "first chunk received from agent", "data": {"text_preview": "\n"}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873124415, "location": "chat.py", "message": "event_generator done", "data": {"chunk_count": 89, "reply_len": 372}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873308324, "location": "chat.py", "message": "chat_stream entered", "data": {"message_preview": "hello is this our first chat with you ?"}, "hypothesisId": "H-B"}
+{"sessionId": "f1df32", "timestamp": 1775873308330, "location": "chat.py", "message": "event_generator started", "data": {}, "hypothesisId": "H-C"}
+{"sessionId": "f1df32", "timestamp": 1775873316205, "location": "chat.py", "message": "first chunk received from agent", "data": {"text_preview": "No"}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873317244, "location": "chat.py", "message": "event_generator done", "data": {"chunk_count": 55, "reply_len": 243}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873346512, "location": "chat.py", "message": "chat_stream entered", "data": {"message_preview": "so you have the full context of what we were taling about ?"}, "hypothesisId": "H-B"}
+{"sessionId": "f1df32", "timestamp": 1775873346516, "location": "chat.py", "message": "event_generator started", "data": {}, "hypothesisId": "H-C"}
+{"sessionId": "f1df32", "timestamp": 1775873352497, "location": "chat.py", "message": "first chunk received from agent", "data": {"text_preview": "Yes"}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873354971, "location": "chat.py", "message": "event_generator done", "data": {"chunk_count": 131, "reply_len": 572}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873369627, "location": "chat.py", "message": "chat_stream entered", "data": {"message_preview": "what did i first say"}, "hypothesisId": "H-B"}
+{"sessionId": "f1df32", "timestamp": 1775873369631, "location": "chat.py", "message": "event_generator started", "data": {}, "hypothesisId": "H-C"}
+{"sessionId": "f1df32", "timestamp": 1775873370029, "location": "chat.py", "message": "first chunk received from agent", "data": {"text_preview": "You"}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873370162, "location": "chat.py", "message": "event_generator done", "data": {"chunk_count": 7, "reply_len": 24}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873512550, "location": "chat.py", "message": "chat_stream entered", "data": {"message_preview": "for my job preference i want stuff like software engineer"}, "hypothesisId": "H-B"}
+{"sessionId": "f1df32", "timestamp": 1775873512555, "location": "chat.py", "message": "event_generator started", "data": {}, "hypothesisId": "H-C"}
+{"sessionId": "f1df32", "timestamp": 1775873521819, "location": "chat.py", "message": "first chunk received from agent", "data": {"text_preview": "\n"}, "hypothesisId": "H-D"}
+{"sessionId": "f1df32", "timestamp": 1775873526430, "location": "chat.py", "message": "event_generator done", "data": {"chunk_count": 44, "reply_len": 208}, "hypothesisId": "H-D"}

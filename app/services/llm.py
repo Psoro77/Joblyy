@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import Optional, List
 from collections.abc import AsyncGenerator
 
 import httpx
@@ -46,7 +47,7 @@ def _normalize_litellm_response(response) -> dict:
     return {"content": content, "tool_calls": tool_calls}
 
 
-def _normalize_tool_call_list(raw: list[dict]) -> list[dict]:
+def _normalize_tool_call_list(raw: List[dict]) -> List[dict]:
     """Normalise a list of Ollama-style tool call dicts."""
     results = []
     for tc in raw:
@@ -60,7 +61,7 @@ def _normalize_tool_call_list(raw: list[dict]) -> list[dict]:
 
 # ── Public API ──
 
-def parse_tool_calls(response: dict) -> list[dict]:
+def parse_tool_calls(response: dict) -> List[dict]:
     """Extract tool calls from our normalised response dict.
 
     Returns a list of ``{"name": str, "arguments": dict}`` or an empty list.
@@ -69,8 +70,8 @@ def parse_tool_calls(response: dict) -> list[dict]:
 
 
 async def chat_completion(
-    messages: list[dict],
-    tools: list[dict] | None = None,
+    messages: List[dict],
+    tools: Optional[List[dict]] = None,
 ) -> dict:
     """Send messages to the configured LLM and return a normalised response.
 
@@ -85,8 +86,8 @@ async def chat_completion(
 
 
 async def chat_completion_stream(
-    messages: list[dict],
-    tools: list[dict] | None = None,
+    messages: List[dict],
+    tools: Optional[List[dict]] = None,
 ) -> AsyncGenerator[dict, None]:
     """Yield chunks from the configured LLM.
 
@@ -107,8 +108,8 @@ async def chat_completion_stream(
 # ── Ollama backend ──
 
 async def _ollama_chat(
-    messages: list[dict],
-    tools: list[dict] | None,
+    messages: List[dict],
+    tools: Optional[List[dict]],
 ) -> dict:
     settings = get_settings()
     url = f"{settings.ollama_base_url}/api/chat"
@@ -139,8 +140,8 @@ async def _ollama_chat(
 
 
 async def _ollama_stream(
-    messages: list[dict],
-    tools: list[dict] | None,
+    messages: List[dict],
+    tools: Optional[List[dict]],
 ) -> AsyncGenerator[dict, None]:
     settings = get_settings()
     url = f"{settings.ollama_base_url}/api/chat"
@@ -152,7 +153,7 @@ async def _ollama_stream(
     if tools:
         body["tools"] = tools
 
-    buffered_tool_calls: list[dict] = []
+    buffered_tool_calls: List[dict] = []
 
     try:
         async with httpx.AsyncClient(timeout=_OLLAMA_TIMEOUT) as client:
@@ -185,8 +186,8 @@ async def _ollama_stream(
 # ── Cloud (LiteLLM) backend ──
 
 async def _cloud_chat(
-    messages: list[dict],
-    tools: list[dict] | None,
+    messages: List[dict],
+    tools: Optional[List[dict]],
 ) -> dict:
     settings = get_settings()
 
@@ -216,8 +217,8 @@ async def _cloud_chat(
 
 
 async def _cloud_stream(
-    messages: list[dict],
-    tools: list[dict] | None,
+    messages: List[dict],
+    tools: Optional[List[dict]],
 ) -> AsyncGenerator[dict, None]:
     settings = get_settings()
 
@@ -239,7 +240,7 @@ async def _cloud_stream(
 
         response = await litellm.acompletion(**kwargs)
 
-        buffered_tool_calls: list[dict] = []
+        buffered_tool_calls: List[dict] = []
 
         async for chunk in response:
             delta = chunk.choices[0].delta

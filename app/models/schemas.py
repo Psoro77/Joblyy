@@ -1,3 +1,4 @@
+from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -8,17 +9,17 @@ class JobCreate(BaseModel):
     title: str
     company: str
     url: str
-    description: str | None = None
-    source: str | None = None
-    match_score: float | None = None
+    description: Optional[str] = None
+    source: Optional[str] = None
+    match_score: Optional[float] = None
 
 
 class JobUpdate(BaseModel):
-    status: str | None = None
-    match_score: float | None = None
-    title: str | None = None
-    company: str | None = None
-    description: str | None = None
+    status: Optional[str] = None
+    match_score: Optional[float] = None
+    title: Optional[str] = None
+    company: Optional[str] = None
+    description: Optional[str] = None
 
 
 class JobResponse(BaseModel):
@@ -26,9 +27,9 @@ class JobResponse(BaseModel):
     title: str
     company: str
     url: str
-    description: str | None
-    source: str | None
-    match_score: float | None
+    description: Optional[str]
+    source: Optional[str]
+    match_score: Optional[float]
     status: str
     found_at: datetime
 
@@ -38,16 +39,16 @@ class JobResponse(BaseModel):
 class ApplicationCreate(BaseModel):
     job_id: int
     method: str = "manual"
-    notes: str | None = None
+    notes: Optional[str] = None
 
 
 class ApplicationResponse(BaseModel):
     id: int
     job_id: int
-    applied_at: datetime | None
+    applied_at: Optional[datetime]
     method: str
     status: str
-    notes: str | None
+    notes: Optional[str]
 
 
 # ── Conversations ──
@@ -77,10 +78,10 @@ class ChatResponse(BaseModel):
 # ── Settings ──
 
 class SettingsUpdate(BaseModel):
-    provider: str | None = None
-    model: str | None = None
-    api_key: str | None = None
-    ollama_base_url: str | None = None
+    provider: Optional[str] = None
+    model: Optional[str] = None
+    api_key: Optional[str] = None
+    ollama_base_url: Optional[str] = None
 
 
 class SettingsResponse(BaseModel):

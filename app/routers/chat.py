@@ -1,3 +1,4 @@
+from typing import List
 import json
 import time
 
@@ -30,7 +31,7 @@ def _dbg(msg: str, data: dict, hypothesis: str):
 # endregion
 
 
-def _build_messages(user_message: str) -> list[dict]:
+def _build_messages(user_message: str) -> List[dict]:
     # region agent log
     try:
         user_context = build_context(user_id=1, intent="general")

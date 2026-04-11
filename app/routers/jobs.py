@@ -1,3 +1,4 @@
+from typing import Optional, List
 from fastapi import APIRouter, HTTPException
 
 from app.models.schemas import JobCreate, JobResponse, JobUpdate
@@ -6,8 +7,8 @@ from app.services.database import save_job, get_jobs, get_job, update_job
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
 
-@router.get("", response_model=list[JobResponse])
-async def list_jobs(status: str | None = None):
+@router.get("", response_model=List[JobResponse])
+async def list_jobs(status: Optional[str] = None):
     return await get_jobs(status=status)
 
 

@@ -1,3 +1,4 @@
+from typing import Dict, List, Optional
 import logging
 import re
 
@@ -115,7 +116,7 @@ Do not add extra sections or commentary.
 """
 
 
-def _extract_name(profile_md: str) -> str | None:
+def _extract_name(profile_md: str) -> Optional[str]:
     match = re.search(r"##\s*Name\s*\n+([^\n]+)", profile_md)
     if not match:
         return None
@@ -125,7 +126,7 @@ def _extract_name(profile_md: str) -> str | None:
     return name
 
 
-def _filled_sections(profile_md: str) -> list[str]:
+def _filled_sections(profile_md: str) -> List[str]:
     filled = []
     for section in ("Name", "Skills", "Experience", "Education", "Languages", "Summary"):
         pattern = rf"##\s*{section}\s*\n+([^\n]+)"
@@ -197,7 +198,7 @@ async def update_preferences(description: str) -> str:
         return f"Error in update_preferences: {exc}"
 
 
-MEMORY_TOOLS: dict[str, dict] = {
+MEMORY_TOOLS: Dict[str, dict] = {
     "parse_and_save_profile": {
         "schema": PARSE_AND_SAVE_PROFILE_SCHEMA,
         "fn": parse_and_save_profile,

@@ -1,3 +1,5 @@
+from typing import Optional, List
+
 import aiosqlite
 from pathlib import Path
 
@@ -61,9 +63,9 @@ async def save_job(
     title: str,
     company: str,
     url: str,
-    description: str | None = None,
-    source: str | None = None,
-    match_score: float | None = None,
+    description: Optional[str] = None,
+    source: Optional[str] = None,
+    match_score: Optional[float] = None,
 ) -> dict:
     async with aiosqlite.connect(DB_PATH) as db:
         cursor = await db.execute(
@@ -77,7 +79,7 @@ async def save_job(
     return await get_job(job_id)
 
 
-async def get_job(job_id: int) -> dict | None:
+async def get_job(job_id: int) -> Optional[dict]:
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = _row_to_dict
         cursor = await db.execute(
@@ -86,7 +88,7 @@ async def get_job(job_id: int) -> dict | None:
         return await cursor.fetchone()
 
 
-async def get_jobs(status: str | None = None, limit: int = 50) -> list[dict]:
+async def get_jobs(status: Optional[str] = None, limit: int = 50) -> List[dict]:
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = _row_to_dict
         if status:
@@ -102,7 +104,7 @@ async def get_jobs(status: str | None = None, limit: int = 50) -> list[dict]:
         return await cursor.fetchall()
 
 
-async def update_job(job_id: int, **fields) -> dict | None:
+async def update_job(job_id: int, **fields) -> Optional[dict]:
     """Update only the provided fields on a job row."""
     if not fields:
         return await get_job(job_id)
@@ -124,7 +126,7 @@ async def update_job(job_id: int, **fields) -> dict | None:
 async def create_application(
     job_id: int,
     method: str = "manual",
-    notes: str | None = None,
+    notes: Optional[str] = None,
 ) -> dict:
     async with aiosqlite.connect(DB_PATH) as db:
         cursor = await db.execute(
@@ -160,7 +162,7 @@ async def save_message(role: str, content: str) -> dict:
         return await cursor.fetchone()
 
 
-async def get_conversation_history(limit: int = 50) -> list[dict]:
+async def get_conversation_history(limit: int = 50) -> List[dict]:
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = _row_to_dict
         cursor = await db.execute(
@@ -182,7 +184,7 @@ async def upsert_user_name(name: str) -> None:
         await db.commit()
 
 
-async def get_applications(job_id: int | None = None) -> list[dict]:
+async def get_applications(job_id: Optional[int] = None) -> List[dict]:
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = _row_to_dict
         if job_id is not None:

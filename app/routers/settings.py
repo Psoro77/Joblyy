@@ -1,3 +1,4 @@
+from typing import Dict, Optional
 from fastapi import APIRouter
 
 from app.config import get_settings, update_settings
@@ -19,7 +20,7 @@ async def read_settings() -> SettingsResponse:
 
 @router.post("", response_model=SettingsResponse)
 async def save_settings(body: SettingsUpdate) -> SettingsResponse:
-    mapping: dict[str, str | None] = {}
+    mapping: Dict[str, Optional[str]] = {}
 
     if body.provider is not None:
         mapping["llm_provider"] = body.provider
